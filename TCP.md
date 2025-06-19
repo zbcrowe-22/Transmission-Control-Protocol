@@ -12,8 +12,7 @@ Date: June 19, 2025
 6. The TCP 3‑Way Handshake
 7. Connection Teardown
 8. Annotated Packet Analysis
-9. Publishing This Markdown to GitHub
-10. Further Reading
+
 
 ## Introduction
 
@@ -53,4 +52,72 @@ This guide walks through capturing and explaining a full TCP (Transmission Contr
 3. Stop the capture after a few seconds (red square button) to keep the file small.
 
 4. Save the capture as tcp_handshake.pcapng.
+
+## Filtering your Capture
+
+1. In the Display Filter bar enter:
+
+    * tcp.stream eq 0
+
+    * This isolates the first TCP conversation Wireshark observed.
+
+3. Alternatively, filter by SYN packets:
+
+    * tcp.flags.syn == 1 && tcp.flags.ack == 0
+
+4. Right‑click any packet in your stream → Follow ▸ TCP Stream to view only that conversation and its teardown.
+
+## Refresher: TCP/IP & OSI Models 
+
+| # | Layer        | Common Protocols                                                                                   |
+| - | ------------ | -------------------------------------------------------------------------------------------------- |
+| 7 | Application  | HTTP (Hypertext Transfer Protocol), DNS (Domain Name System), SMTP (Simple Mail Transfer Protocol) |
+| 6 | Presentation | TLS (Transport Layer Security), SSL (Secure Sockets Layer)                                         |
+| 5 | Session      | NetBIOS (Network Basic Input/Output System), RPC (Remote Procedure Call)                           |
+| 4 | Transport    | TCP (Transmission Control Protocol), UDP (User Datagram Protocol)                                  |
+| 3 | Network      | IP (Internet Protocol), ICMP (Internet Control Message Protocol)                                   |
+| 2 | Data Link    | Ethernet, 802.11 Wi-Fi                                                                             |
+| 1 | Physical     | Cables, radio waves, fiber                                                                         |
+
+
+## The TCP 3‑Way Handshake
+
+Client                         Server
+   | --- SYN (Synchronize) ---> |
+   | <-- SYN-ACK (Synchronize-Acknowledge) -- |
+   | --- ACK (Acknowledge) ---> |
+
+
+1. SYN: Client sends a synchronization request, proposing an initial sequence number (ISN).
+
+2. SYN‑ACK: Server acknowledges the SYN and proposes its own ISN.
+
+3. ACK: Client acknowledges server’s ISN, establishing the connection (ESTABLISHED state).
+
+After this handshake, data transfer can begin via PSH (Push) and ACK packets.
+
+## Connection Teardown
+
+A graceful close typically performs a 4‑way FIN (Finish) handshake:
+
+1. FIN from the sender.
+
+2. ACK by the receiver.
+
+3. FIN from the receiver.
+
+4. ACK by the original sender.
+
+RST (Reset) can appear when a party aborts the connection abruptly.
+
+## Annotated Packet Analysis  
+
+Screenshot 1: Packet #1 – Client SYNExplain sequence number, flags, source/destination ports, MSS (Maximum Segment Size) option.
+
+Screenshot 2: Packet #2 – Server SYN‑ACKHighlight acknowledgment number and window size.
+
+Screenshot 3: Packet #3 – Client ACKNote transition to ESTABLISHED state.
+
+Screenshot 4: FIN/ACK sequenceShow orderly teardown.
+
 

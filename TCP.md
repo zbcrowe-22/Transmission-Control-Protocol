@@ -123,7 +123,7 @@ Screenshot 4: FIN/ACK sequenceShow orderly teardown.
 
 # Notes and Sources
 
-RFC 793 – TCP Specification
+RFC 793 – TCP Specification - [text](https://www.rfc-editor.org/rfc/rfc793.html)
 
 Wireshark User Guide – https://www.wireshark.org/docs/
 

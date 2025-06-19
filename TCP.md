@@ -110,22 +110,85 @@ A graceful close typically performs a 4‑way FIN (Finish) handshake:
 
 RST (Reset) can appear when a party aborts the connection abruptly.
 
-## Annotated Packet Analysis  
+## Annotated Packet Analysis
 
-Screenshot 1: Packet #1 – Client SYNExplain sequence number, flags, source/destination ports, MSS (Maximum Segment Size) option.
+> **Context:** 192.168.50.196 (= client) initiates an HTTPS session to 23.215.0.138:443.  
+> Capture shows the classic three-way handshake, followed by a graceful FIN/ACK teardown.
 
-Screenshot 2: Packet #2 – Server SYN‑ACKHighlight acknowledgment number and window size.
+---
 
-Screenshot 3: Packet #3 – Client ACKNote transition to ESTABLISHED state.
+### 1  Packet #1 – Client → Server `[SYN]`
 
-Screenshot 4: FIN/ACK sequenceShow orderly teardown.
+![Client-SYN](images/syn.png)
+
+| Field | Value | Why it matters |
+|-------|-------|----------------|
+| **Src Port** | **52850** | Ephemeral port chosen by the client for this connection. |
+| **Dst Port** | **443** | Standard HTTPS. |
+| **Flags** | **SYN=1, ACK=0** | Start of a new TCP connection. |
+| **Seq Num** | **0** (relative) | ISN = Initial Sequence Number establishes byte-numbering. |
+| **MSS option** | **1460 bytes** | Client can accept 1460-byte data segments (MTU 1500 – 40 bytes IP+TCP). |
+| **Window Size** | **65 535** | How many bytes the client is ready to receive before ACKing. |
+
+---
+
+### 2  Packet #2 – Server → Client `[SYN, ACK]`
+
+![Server-SYN-ACK](images/synack.png)
+
+| Field | Value | Why it matters |
+|-------|-------|----------------|
+| **Flags** | **SYN=1, ACK=1** | Server agrees to the connection and acknowledges client’s ISN. |
+| **Ack Num** | **1** (client ISN + 1) | Confirms receipt of the client’s SYN. |
+| **Seq Num** | **0** (relative) | Server’s own ISN. |
+| **Window Size** | **131 712** | Server’s receive buffer advertisement. |
+
+---
+
+### 3  Packet #3 – Client → Server `[ACK]`
+
+![Client-ACK](images/ack.png)
+
+| Field | Value |
+|-------|-------|
+| **Flags** | **ACK=1** (no SYN) |
+| **Ack Num** | **1** (server ISN + 1) |
+
+*After this ACK, both sides have exchanged ISNs and acknowledgments – the socket state changes to **ESTABLISHED**. TLS handshake begins in the very next packet.*
+
+---
+
+### 4  Orderly Teardown – `FIN → FIN/ACK → ACK`
+
+![FIN-ACK sequence](images/fin.png)
+
+1. **Client → Server FIN** – client says *“I’ve finished sending data.”*  
+2. **Server → Client ACK** – acknowledges the FIN.  
+3. **Server → Client FIN** – server is done too.  
+4. **Client → Server ACK** – final confirmation; connection enters **TIME_WAIT** on the client side.
+
+| State Transition | RFC 793 Definition |
+|------------------|--------------------|
+| ESTABLISHED → FIN-WAIT-1 | Client sends its FIN. |
+| FIN-WAIT-1 → FIN-WAIT-2 | Receives ACK of its FIN. |
+| FIN-WAIT-2 → TIME-WAIT  | Receives peer’s FIN, sends ACK, waits 2 × MSL. |
+
+---
+
+### Key Takeaways
+
+* **Three packets** build a reliable byte-stream: SYN → SYN/ACK → ACK.  
+* MSS & Window Size options tune performance from the very first segment.  
+* Orderly FIN/ACK teardown prevents data loss; **TIME_WAIT** protects late segments from prior connections.
+
+
 
 
 # Notes and Sources
 
-RFC 793 – TCP Specification - [text](https://www.rfc-editor.org/rfc/rfc793.html)
+RFC 793 – TCP Specification - [TCP Specifications](https://www.rfc-editor.org/rfc/rfc793.html)
 
 Wireshark User Guide – https://www.wireshark.org/docs/
 
-Stevens, W. R. – TCP/IP Illustrated, Vol 1
+Stevens, W. R. – TCP/IP Illustrated, Vol 1 - [TCP/IP Illustrated PDF](https://www.r-5.org/files/books/computers/internals/net/Richard_Stevens-TCP-IP_Illustrated-EN.pdf)
 

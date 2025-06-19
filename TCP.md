@@ -14,3 +14,43 @@ Date: June 19, 2025
 8. Annotated Packet Analysis
 9. Publishing This Markdown to GitHub
 10. Further Reading
+
+## Introduction
+
+This guide walks through capturing and explaining a full TCP (Transmission Control Protocol) 3‑way handshake and graceful teardown using Wireshark. Whether you are refreshing your knowledge of the OSI (Open Systems Interconnection) layers or just learning how to read packet captures, the step‑by‑step instructions and annotated screenshots will help you master the fundamentals.
+
+## Installing Wireshark
+
+### 1. Download
+
+| Operating System                   | Command / Action                                                                                                                                                                                                                                                                                  |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Windows**                        | Download the latest stable installer from [https://www.wireshark.org/download.html](https://www.wireshark.org/download.html). When prompted, install **Npcap** (Network Packet Capture) driver—Wireshark needs it for packet sniffing.                                                            |
+| **macOS**                          | With Homebrew (package manager) installed, run:<br>`brew install --cask wireshark`<br>Grant packet-capture permissions when macOS prompts for them.                                                                                                                                               |
+| **Linux (Debian / Ubuntu)**        | `bash<br>sudo apt update && sudo apt install wireshark<br>`<br>During installation choose **“Yes”** to allow non-root packet capturing, then add yourself to the *wireshark* group:<br>`bash<br>sudo usermod -aG wireshark $USER<br>`<br>Log out and back in for the group change to take effect. |
+| **Linux (Fedora / RHEL / CentOS)** | `bash<br>sudo dnf install wireshark wireshark-qt<br>`                                                                                                                                                                                                                                             |
+### Set Up
+
+1. Launch Wireshark.
+
+2. Verify that your primary network interface (e.g., en0, eth0, Wi‑Fi) appears in the capture list.
+
+3. If no interfaces are listed, confirm Npcap or dumpcap permissions (Linux) are configured.
+
+
+## Capturing a TCP Session
+
+1. Select the correct interface (usually the one with the highest packets/s count) and click the blue shark‑fin icon to start capture.
+
+2. Generate a quick TCP exchange in another window (pick one):
+
+    * Terminal: curl -I https://example.com (fetches headers only)
+
+    * Browser: Load any HTTPS site.
+
+    * Command‑line: telnet example.com 80 then CTRL+] & quit.
+
+3. Stop the capture after a few seconds (red square button) to keep the file small.
+
+4. Save the capture as tcp_handshake.pcapng.
+

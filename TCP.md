@@ -160,7 +160,7 @@ RST (Reset) can appear when a party aborts the connection abruptly.
 
 ### 4  Orderly Teardown – `FIN → FIN/ACK → ACK`
 
-![FIN-ACK sequence](images/fin.png)
+![FIN-ACK sequence](images/fyn.png)
 
 1. **Client → Server FIN** – client says *“I’ve finished sending data.”*  
 2. **Server → Client ACK** – acknowledges the FIN.  

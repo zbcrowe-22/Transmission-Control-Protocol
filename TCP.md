@@ -121,3 +121,11 @@ Screenshot 3: Packet #3 – Client ACKNote transition to ESTABLISHED state.
 Screenshot 4: FIN/ACK sequenceShow orderly teardown.
 
 
+# Notes and Sources
+
+RFC 793 – TCP Specification
+
+Wireshark User Guide – https://www.wireshark.org/docs/
+
+Stevens, W. R. – TCP/IP Illustrated, Vol 1
+

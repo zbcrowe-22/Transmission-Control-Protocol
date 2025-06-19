@@ -2,16 +2,15 @@
 Author: Zachary Crowe
 Date: June 19, 2025
 
-# Table of Contents
-
-1. Introduction
-2. Installing Wireshark
-3. Capturing a TCP Session
-4. Filtering Your Capture
-5. Refresher: TCP/IP & OSI Models
-6. The TCP 3‑Way Handshake
-7. Connection Teardown
-8. Annotated Packet Analysis
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Installing Wireshark](#installing-wireshark)
+3. [Capturing a TCP Session](#capturing-a-tcp-session)
+4. [Filtering Your Capture](#filtering-your-capture)
+5. [Refresher: TCP/IP & OSI Models](#refresher-tcpip--osi-models)
+6. [The TCP 3-Way Handshake](#the-tcp-3-way-handshake)
+7. [Connection Teardown](#connection-teardown)
+8. [Annotated Packet Analysis](#annotated-packet-analysis)
 
 
 ## Introduction
